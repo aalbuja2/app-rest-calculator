@@ -1,0 +1,39 @@
+### Addition Request
+PUT http://localhost:3000/operation/addition
+content-type: application/json
+
+{
+
+  "number1": 1,
+  "number2":2
+}
+
+### Subtration Request
+PUT http://localhost:3000/operation/substraction
+content-type: application/json
+
+{
+
+  "number1": 1,
+  "number2":2
+}
+
+### Divide Request
+PUT http://localhost:3000/operation/division
+content-type: application/json
+
+{
+
+  "number1": 1,
+  "number2":1
+}
+
+### Multiplication Request
+PUT http://localhost:3000/operation/multiplication
+content-type: application/json
+
+{
+
+  "number1": 1,
+  "number2":2
+}
