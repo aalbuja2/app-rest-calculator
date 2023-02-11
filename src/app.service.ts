@@ -14,6 +14,7 @@ export class AppService {
       number1,
       number2,
       result,
+      operation: 'addition',
     };
   }
   subtraction(operationDto: OperationDto): OperationResponseDto {
@@ -23,6 +24,7 @@ export class AppService {
       number1,
       number2,
       result,
+      operation: 'subtraction',
     };
   }
 
@@ -33,6 +35,7 @@ export class AppService {
       number1,
       number2,
       result,
+      operation: 'multiplication',
     };
   }
 
@@ -46,10 +49,11 @@ export class AppService {
       number1,
       number2,
       result,
+      operation: 'division',
     };
   }
 
-  saveDB(operationType: string, operationResponse: OperationResponseDto) {
+  saveDB(operationType: OperationResponseDto) {
     return "";
   }
 }

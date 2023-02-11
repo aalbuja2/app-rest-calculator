@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
 
 @Entity('operation_log')
 export class OperationLog {
@@ -16,4 +16,7 @@ export class OperationLog {
 
   @Column()
   operation: string;
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
 }

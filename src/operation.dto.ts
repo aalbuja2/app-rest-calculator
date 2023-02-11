@@ -8,10 +8,8 @@ export class OperationDto {
 }
 
 export class OperationResponseDto {
-  @IsNumber()
   number1: number;
-  @IsNumber()
   number2: number;
-  @IsNumber()
   result: number;
+  operation: string;
 }

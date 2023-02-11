@@ -1,5 +1,5 @@
 ### Addition Request
-PUT http://localhost:3000/operation/addition
+PUT http://localhost:3001/operation/addition
 content-type: application/json
 
 {
@@ -9,7 +9,7 @@ content-type: application/json
 }
 
 ### Subtration Request
-PUT http://localhost:3000/operation/substraction
+PUT http://localhost:3001/operation/substraction
 content-type: application/json
 
 {
@@ -19,7 +19,7 @@ content-type: application/json
 }
 
 ### Divide Request
-PUT http://localhost:3000/operation/division
+PUT http://localhost:3001/operation/division
 content-type: application/json
 
 {
@@ -29,7 +29,7 @@ content-type: application/json
 }
 
 ### Multiplication Request
-PUT http://localhost:3000/operation/multiplication
+PUT http://localhost:3001/operation/multiplication
 content-type: application/json
 
 {
