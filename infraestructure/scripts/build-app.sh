@@ -11,3 +11,6 @@ npm run test
 
 #Run test e2e
 npm run test:e2e
+
+# Code analysis coverage
+npm run test:cov
