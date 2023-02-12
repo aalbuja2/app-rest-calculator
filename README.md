@@ -108,6 +108,12 @@ En este caso son cinco endpoints los cuatro primeros se refieren a las operacion
 
 En este caso se ha utilizado como herramienta de monitoreo Prometheus que nos dará metricas de:
 
+- Total user CPU time spent in seconds.
+- Resident memory size in bytes.
+- Number of open file descriptors.
+- Lag of event loop in seconds.
+- Start time of the process since unix epoch in seconds.
+- Entre otras el response completo de las métricas se puede ver en el siguiente link  [Metricas](https://3f26044d-d591-4f84-9c15-833aadcfb1dd.mock.pstmn.io/metrics)
 
 ## Ejecución de pruebas unitarias
 
@@ -154,4 +160,4 @@ $ helm install -f node/values.yaml node-chart ./infraestructure/node
 $ helm install postgres-chart infraestructure/postgres/ --values /infraestructure/postgres/values.yaml
 
 ```
-
+![Minikube Dashboard](/images/kubernetes.png)
