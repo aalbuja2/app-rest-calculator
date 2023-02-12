@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
+import { Exclude } from 'class-transformer';
 
 @Entity('operation_log')
 export class OperationLog {

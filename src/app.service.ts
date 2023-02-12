@@ -1,12 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { OperationDto, OperationResponseDto } from './operation.dto';
+import { OperationDto } from './dto/request/request.dto';
+import { OperationResponseDto } from './dto/response/response.dto';
+import { OperationLog } from './entities/operation_log.entity';
+import { OperationService } from './operation/operation.service';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
-  }
 
+  constructor(
+    private operationService: OperationService
+  ) {
+
+  }
   addition(operationDto: OperationDto): OperationResponseDto {
     const { number1, number2 } = operationDto;
     const result = number1 + number2;
@@ -53,7 +58,7 @@ export class AppService {
     };
   }
 
-  saveDB(operationType: OperationResponseDto) {
-    return "";
+  async create(operationDto: OperationResponseDto): Promise<OperationLog> {
+    return this.operationService.create(operationDto);
   }
 }

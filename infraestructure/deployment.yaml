@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-calculator-deployment
+  labels:
+    app: app-calculator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-calculator
+  template:
+    metadata:
+      labels:
+        app: app-calculator
+    spec:
+      containers:
+        - name: node
+          image: aalbuja/node:latest
+          ports:
+            - containerPort: 3000
+          imagePullPolicy: 'IfNotPresent'
+          envFrom:
+            - configMapRef:
+                name: postgres-config
+          volumeMounts:
+            - name: node-modules
+              mountPath: /usr/src/app/node_modules
+        - name: postgres
+          image: aalbuja/postgres:latest
+          ports:
+            - containerPort: 5432
+          imagePullPolicy: 'IfNotPresent'
+          envFrom:
+            - configMapRef:
+                name: postgres-config
+          volumeMounts:
+            - name: my-data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: node-modules
+        - name: my-data

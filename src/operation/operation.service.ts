@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { OperationResponseDto } from 'src/dto/response/response.dto';
 import { Repository } from 'typeorm';
-import { OperationResponseDto } from 'src/operation.dto';
 import { OperationLog } from '../entities/operation_log.entity';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class OperationService {
     private readonly usersRepository: Repository<OperationLog>,
   ) { }
 
-  create(createOperationLog: OperationResponseDto): Promise<OperationLog> {
+  async create(createOperationLog: OperationResponseDto): Promise<OperationLog> {
     try {
       return this.usersRepository.save({
         createdAt: new Date(),

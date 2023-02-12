@@ -1,4 +1,4 @@
-import { OperationLog } from "src/entities/operation_log.entity";
+import { OperationLog } from "../entities/operation_log.entity";
 
 export const AppConfig = () => ({
   server: {
