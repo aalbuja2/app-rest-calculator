@@ -22,52 +22,136 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+## Descripción de la Aplicación
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+La aplicación desarrollada esta bassada en NestJs + Postgres, que consiste en un servicio web que nos permite realizar las cuatro operaciones matemáticas (suma, resta, multiplicación, división) y almacenar la información de las operaciones procesadas con la Web API. Adición se ha desarrollado el proceso de despligue en base a contenedores en Kubernates (Ks8).
 
-## Installation
+Esta aplicación expone básicamente cuatro enpoints para cada operación, mientras cada uno devulve un JSON con los números de entrada, el resultado, tipo de operación y fecha procesamiento.
+
+## Despliegue de la Aplicación
+
+Es este caso esta aplicación es en base a contenedores para el objetivo en particular se ha utilizado dos imágenes node:16.17.1 y otra de postgres:alpine, por lo cual para su construcción se ha utilizado docker y docker-compose. 
+
+Para la creación de las imagenes se ha creado un archivo de Dockerfile donde se describe las instrucciones necesarias para la imagen.
+
+Adicional como heramienta para gestionar la aplicación  de Kubernates se ha hecho uso de HELM, dentro de la sección de infraestrurua se han creado dos chart para nada imagen necesaria. Las iamgenes por su lado desde los chart se descargan desde el repositorio de Docker HUB en donde se han publicado las imagenes de la aplicacción.
+
+## Prerequistos
+
+- Docker
+- Docker compose
+- Node 16.17.1
+- Npm 8.15.0
+- Kubectl
+- Minikube
+
+## Arquitectura Propuesta
+
+![Arquitectura](/images/Arquitectura.png)
+
+Se utilizó Postgres como motor de base de datos en donde se almacena cada operaciòn procesada.
+
+| Campo      | Tipo      | Obligatorio |            |
+|------------|-----------|-------------|------------|
+| id         | int       | x           | PrimaryKey |
+| number1    | int       | x           |            |
+| number2    | int       | x           |            |
+| result     | int       | x           |            |
+| operation  | varchar   | x           |            |
+| created_at | timestamp | x           |            |
+
+![Tabla](/images/Table.png)
+
+La estructura de los paquetes de los archivo fuente de la aplicacion son los siguientes:
+
+```
+app
+|__images
+|__infraestructure
+|___helm 
+|__src
+|___config
+|___dto
+|___migrations
+|___operations
+|__test
+|___e2e
+|___unit
+```
+
+## Instalación
 
 ```bash
 $ npm install
 ```
 
-## Running the app
+## Construcción y despliegue de contenedores
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+$ docker-compose build
+$ docker-compose up
 ```
 
-## Test
+## Ejecución de migraciones
 
 ```bash
-# unit tests
+$ npn run typeorm:run-migrations
+```
+
+## Swagger App
+
+La documentaciòn en swagger nos permite visualizar los endpoint expuestos de la aplicación.
+
+En este caso son cinco endpoints los cuatro primeros se refieren a las operaciones matemáticas, y por otro lado el siguiente es para visualizar las métricas de monitoreo.
+
+![Documentacion](/images/swagger.png)
+
+En este caso se ha utilizado como herramienta de monitoreo Prometheus que nos dará metricas de:
+
+
+## Ejecución de pruebas unitarias
+
+```bash
 $ npm run test
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
 ```
 
-## Support
+## Ejecución de Pruebas e2e
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+$ npm run test:e2e
 
-## Stay in touch
+```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Ejecución pruebas de cobertura
 
-## License
+```bash
+$ npm run test:cov
 
-Nest is [MIT licensed](LICENSE).
+```
+![Coberuta Test](/images/Cobertura.png)
+
+
+## Etiqueta y publicación de imagenes en Docker Hub 
+
+```bash
+
+$ docker tag node:16.17.1 aalbuja/node:latest
+$ docker push aalbuja/node:latest
+
+$ docker tag postgres:alpine aalbuja/postgres:latest
+$ docker push aalbuja/postgres:latest
+
+```
+![Docker](/images/imagenes_docker.png)
+
+## Despliegue de la App en Kubernetes Minikube
+
+```bash
+
+#Despliegue de la applicación en el cluster de kubernetes
+$ helm install -f node/values.yaml node-chart ./infraestructure/node
+$ helm install postgres-chart infraestructure/postgres/ --values /infraestructure/postgres/values.yaml
+
+```
+
