@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+    app.kubernetes.io/component: database
+    app.kubernetes.io/managed-by: helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ .Chart.Name }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+        app.kubernetes.io/component: database
+        app.kubernetes.io/managed-by: helm
+    spec:
+      containers:
+        - name: {{ .Release.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - "-c"
+            - "config_file=/etc/postgresql/postgres.conf"
+          env:
+            - name: POSTGRES_USER
+              value: {{ .Values.defaultDatabase.user }}
+            - name: POSTGRES_PASSWORD
+              value: "{{ .Values.defaultDatabase.password }}"
+            - name: POSTGRES_DB
+              value: {{ .Values.defaultDatabase.name }}
+          resources:
+            requests:
+              memory: "{{ .Values.resources.requests.memory }}"
+              cpu: "{{ .Values.resources.requests.cpu }}"
+            limits:
+              memory: "{{ .Values.resources.limits.memory }}"
+              cpu: "{{ .Values.resources.limits.cpu }}"
+          ports:
+            - name: {{ .Chart.Name }}
+              containerPort: {{ .Values.ports.internal }}
+          readinessProbe:
+            initialDelaySeconds: 15
+            failureThreshold: 5
+            timeoutSeconds: 2
+            exec:
+              command: ["psql", "-w", "-U", "{{ .Values.defaultDatabase.user }}", "-d", "{{ .Values.defaultDatabase.name }}", "-c", "SELECT 1"]
+          livenessProbe:
+            initialDelaySeconds: 15
+            failureThreshold: 5
+            timeoutSeconds: 2
+            exec:
+              command: ["psql", "-w", "-U", "{{ .Values.defaultDatabase.user }}", "-d", "{{ .Values.defaultDatabase.name }}", "-c", "SELECT 1"]
+          volumeMounts:
+            - name: db-data
+              mountPath: /var/lib/postgresql/data/
+            - name: postgres-init-scripts-volume
+              mountPath: /docker-entrypoint-initdb.d/
+            - name: {{ $.Chart.Name }}-config-volume
+              mountPath: /etc/postgresql/
+      volumes:
+        - name: db-data
+        - name: postgres-init-scripts-volume
+          configMap:
+            name: {{ .Release.Name }}-init-scripts
+        - name: {{ $.Chart.Name }}-config-volume
+          configMap:
+            name: {{ $.Release.Name }}-config

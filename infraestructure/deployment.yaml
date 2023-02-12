@@ -18,7 +18,7 @@ spec:
         - name: node
           image: aalbuja/node:latest
           ports:
-            - containerPort: 3000
+            - containerPort: 3001
           imagePullPolicy: 'IfNotPresent'
           envFrom:
             - configMapRef:

@@ -1,14 +1,16 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AppConfig } from './config/app.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppConfig } from './config/app.config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { OperationModule } from './operation/operation.module';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 
 @Module({
   imports: [
+    PrometheusModule.register(),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [AppConfig],

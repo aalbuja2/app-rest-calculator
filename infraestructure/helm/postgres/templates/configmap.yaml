@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-init-scripts
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}-init-scripts
+    app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+    app.kubernetes.io/component: database
+    app.kubernetes.io/managed-by: helm
+data:
+  10-create-user-and-dbs.sql: |
+    {{- range $user := .Values.users }}
+    CREATE USER {{ $user.name }} WITH PASSWORD '{{ $user.password }}';
+    {{- end }}
+
+    {{- range $database := .Values.databases }}
+    CREATE DATABASE {{ $database.name }};
+    GRANT ALL PRIVILEGES ON DATABASE {{ $database.name }} TO {{ $database.user }};
+    {{- end }}
+  20-grant-privileges-to-public.sh: |
+    export PGPASSWORD={{ .Values.defaultDatabase.password }}
+    {{- range $database := .Values.databases }}
+    psql -U {{ $.Values.defaultDatabase.user }} -d {{ $database.name }} -c "GRANT ALL PRIVILEGES ON SCHEMA public TO {{ $database.user }};"
+    {{ end }}
+---
+{{ $defaultConfig := .Files.Get "config/postgres.conf" | replace "=" ":" | fromYaml }}
+{{ $additionalConfig := .Values.config | default "" | replace "=" ":" | fromYaml }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $.Release.Name }}-config
+  labels:
+    app.kubernetes.io/name: {{ $.Chart.Name }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}-config
+    app.kubernetes.io/version: {{ $.Chart.AppVersion | quote }}
+    app.kubernetes.io/component: database
+    app.kubernetes.io/managed-by: helm
+data:
+  postgres.conf: |
+    {{- range $name, $value := (mergeOverwrite $defaultConfig $additionalConfig) }}
+    {{ $name }} = {{ $value }}
+    {{- end }}

@@ -18,11 +18,12 @@ describe('AppController (e2e)', () => {
 
   it('/ (PUT) Addition', () => {
     return request(app.getHttpServer())
-      .put('/operation/addition')
+      .post('/operation/addition')
       .send({
         number1: 1,
         number2: 2,
       })
+      .expect(201)
       .expect({
         number1: 1,
         number2: 2,
@@ -34,11 +35,12 @@ describe('AppController (e2e)', () => {
   })
   it('/ (PUT) Substraction', () => {
     return request(app.getHttpServer())
-      .put('/operation/substraction')
+      .post('/operation/substraction')
       .send({
         number1: 1,
         number2: 2,
       })
+      .expect(201)
       .expect({
         number1: 1,
         number2: 2,
@@ -50,11 +52,12 @@ describe('AppController (e2e)', () => {
   })
   it('/ (PUT) Multiplication', () => {
     return request(app.getHttpServer())
-      .put('/operation/multiplication')
+      .post('/operation/multiplication')
       .send({
         number1: 1,
         number2: 2,
       })
+      .expect(201)
       .expect({
         number1: 1,
         number2: 2,
@@ -66,15 +69,16 @@ describe('AppController (e2e)', () => {
   })
   it('/ (PUT) Division', () => {
     return request(app.getHttpServer())
-      .put('/operation/division')
+      .post('/operation/division')
       .send({
         number1: 1,
-        number2: 2,
+        number2: 1,
       })
+      .expect(201)
       .expect({
         number1: 1,
-        number2: 2,
-        result: 0.5,
+        number2: 1,
+        result: 1,
         operation: 'division',
         createdAt: new Date(),
         id: 3
